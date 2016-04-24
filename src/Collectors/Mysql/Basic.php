@@ -7,6 +7,6 @@
 namespace src\Collectors\Mysql;
 
 
-class MysqlBasic {
+abstract class Basic {
 
 }
