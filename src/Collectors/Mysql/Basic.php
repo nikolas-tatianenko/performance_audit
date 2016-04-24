@@ -17,15 +17,21 @@ abstract class Basic {
    *   Username.
    * @param string $password
    *   Password.
-   * @param string $dbname
+   * @param string $database
    *   Database name.
    * @param string $host
    *   Host.
    */
-  function __construct($username, $password, $dbname = NULL, $host = 'localhost') {
+  function __construct($username, $password = NULL, $database = NULL, $host = 'localhost') {
     $this->link = mysql_connect($host, $username, $password);
+
     if (!$this->link) {
       die('Fail: ' . mysql_error());
+    }
+
+    if ($database) {
+      $this->dbname = $database;
+      mysql_select_db($database, $this->link) or die(mysql_error());
     }
   }
 
