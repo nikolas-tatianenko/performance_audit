@@ -4,8 +4,8 @@
  */
 include_once('autoload.php');
 
-use src\Collectors\Mysql\GetMysqlInfo;
+use src\Collectors\Mysql\MysqlInfo;
 
-$test = new GetMysqlInfo('root', '');
+$test = new MysqlInfo('root', '');
 $data = $test->getInfo();
 var_dump($data);

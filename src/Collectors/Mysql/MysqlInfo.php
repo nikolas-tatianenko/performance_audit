@@ -6,7 +6,7 @@
 
 namespace src\Collectors\Mysql;
 
-class GetMysqlInfo extends Basic {
+class MysqlInfo extends Basic {
 
   /**
    * Get sql data.
