@@ -9,24 +9,6 @@ namespace src\Collectors\Mysql;
 class GetMysqlInfo extends Basic {
 
   /**
-   * Get Class method during class creation.
-   *
-   * @param string $username
-   *   Username.
-   * @param string $password
-   *   Password.
-   * @param string $dbname
-   *   Database name.
-   * @param string $host
-   *   Host.
-   */
-  function __construct($username, $password, $dbname = '', $host = 'localhost') {
-    parent::__construct($username, $password, $dbname, $host);
-
-    return $this->getInfo();
-  }
-
-  /**
    * Get sql data.
    *
    * @return array
