@@ -1,11 +1,26 @@
 <?php
 /**
- * @file Bacis file for tests.
+ * @file
+ * Basic file for tests.
  */
 include_once('autoload.php');
 
 use src\Collectors\Mysql\MysqlInfo;
+use src\Analyzer\Mysql\MemoryAnalyzer;
+use src\Collectors\Mysql\AnalyseDBAndTable;
 
-$test = new MysqlInfo('root', '');
+// Set config variables.
+define('SQLuser', 'root');
+define('SQLpass', '');
+
+// =================
+// MySQL get ini.
+// ==================
+$test = new MysqlInfo(SQLuser, SQLpass);
 $data = $test->getInfo();
-var_dump($data);
+$analyzer = new MemoryAnalyzer(SQLuser, SQLpass, 'basic');
+var_dump($analyzer);
+
+//$test = new AnalyseDBAndTable(SQLuser, SQLpass);
+//$data = $test->getInfoColumns('d8_dev', 'config');
+//$data = $test->showTables();
