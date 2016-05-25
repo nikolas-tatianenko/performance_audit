@@ -8,7 +8,10 @@ namespace src\Collectors\Mysql;
 
 
 abstract class Basic {
+
   protected $link = NULL;
+  private $SQLuser;
+  private $SQLpassword;
 
   /**
    * Get Class method during class creation.
@@ -23,6 +26,8 @@ abstract class Basic {
    *   Host.
    */
   function __construct($username, $password = NULL, $database = NULL, $host = 'localhost') {
+    $this->SQLuser = $username;
+    $this->SQLpassword = $password;
     $this->link = mysql_connect($host, $username, $password);
 
     if (!$this->link) {
