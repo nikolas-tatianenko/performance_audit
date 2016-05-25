@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Class Autoloader.
@@ -13,9 +14,7 @@ class Autoloader {
   }
 
   public static function loadPackagesAndLog($className) {
-    echo __METHOD__ . PHP_EOL;
     self::loadPackages($className);
-    printf("Class %s was loaded from %sn" . PHP_EOL, $className, self::$_lastLoadedFilename);
   }
 }
 
