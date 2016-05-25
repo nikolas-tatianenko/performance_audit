@@ -34,9 +34,11 @@ class AnalyseDbAndTable extends Basic {
   }
 
   function getInfoColumns($database = '', $table_name) {
+
     if (!$database) {
       $database = $this->database;
     }
+
     $query = "SELECT * FROM information_schema.columns WHERE table_schema = '$database' and table_name ='$table_name'";
 
     $result = mysql_query($query);

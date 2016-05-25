@@ -6,6 +6,7 @@
 
 namespace src\Collectors\Mysql;
 
+
 class MysqlInfo extends Basic {
 
   /**
