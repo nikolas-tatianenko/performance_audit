@@ -102,6 +102,12 @@ function performance_audit_requirements($phase) {
       'severity' => REQUIREMENT_OK,
     );
 
+    $requirements['performance_audit_mysql'] = array(
+      'title' => $t('Performance Audit MYsql'),
+      'value' => t('No problems in Mysql configuration were found.'),
+      'severity' => REQUIREMENT_OK,
+    );
+
     $type = PERFORMANCE_AUDIT_PHP_INI;
     $analyzer = new PerformanceAuditPHPAnalyzer($type);
     $data = $analyzer->analyze();
