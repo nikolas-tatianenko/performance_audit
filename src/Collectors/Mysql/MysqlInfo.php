@@ -4,10 +4,7 @@
  * Get Mysql Info
  */
 
-namespace src\Collectors\Mysql;
-
-
-class MysqlInfo extends Basic {
+class MysqlInfo {
 
   /**
    * Get sql data.
@@ -23,10 +20,14 @@ class MysqlInfo extends Basic {
     if ($variable) {
       $query .= " LIKE '%$variable%'";
     }
-    $result = mysql_query($query);
-    while ($row = mysql_fetch_assoc($result)) {
-      $data[$row['Variable_name']] = $row['Value'];
+
+    $result = db_query($query)->fetchAll();
+
+    foreach ($result as $row) {
+
+      $data[$row->Variable_name] = $row->Value;
     }
+
 
     return $data;
   }

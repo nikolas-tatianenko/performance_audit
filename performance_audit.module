@@ -31,7 +31,6 @@ define('PERFORMANCE_AUDIT_MYSQL_INI', 'mysql_ini');
 module_load_include('php', 'performance_audit', 'classes/PerformanceAuditPHPCollector');
 module_load_include('php', 'performance_audit', 'classes/PerformanceAuditPHPAnalyzer');
 
-module_load_include('php', 'performance_audit', 'src/Collectors/Mysql/Basic');
 module_load_include('php', 'performance_audit', 'src/Collectors/Mysql/MysqlInfo');
 module_load_include('php', 'performance_audit', 'src/Analyzer/Mysql/MemoryAnalyzer');
 
