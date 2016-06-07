@@ -1,3 +1,4 @@
 name = Performance Audit
 description = Provides performance audit information and recomendations.
 core = 7.x
+dependencies[] = ctools

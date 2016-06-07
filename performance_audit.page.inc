@@ -29,6 +29,23 @@ function performance_audit_get_content() {
   );
 }
 
+function performance_audit_get_content_mysql(){
+  $analyzer = new MemoryAnalyzer('root', '', PERFORMANCE_AUDIT_MYSQL_INI);
+  $data =  $analyzer->analyze();
+
+  return array(
+    'content' => array(
+      '#theme' => 'performance_audit_page',
+      '#data' => $data,
+      '#attached' => array(
+        'css' => array(
+          'data' => drupal_get_path('module', 'performance_audit') . '/performance_audit.css',
+        ),
+      ),
+    ),
+  );
+}
+
 /**
  * Returns themed representation of Performance Audit page.
  *

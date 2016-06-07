@@ -24,9 +24,16 @@ define('PERFORMANCE_AUDIT_SERVER', 'server');
 // Returns a list of registered streams.
 define('PERFORMANCE_AUDIT_STREAM_WRAPPERS', 'stream_wrappers');
 
+// Returns information about MYSQL settings.
+define('PERFORMANCE_AUDIT_MYSQL_INI', 'mysql_ini');
+
 // Loads required classes.
 module_load_include('php', 'performance_audit', 'classes/PerformanceAuditPHPCollector');
 module_load_include('php', 'performance_audit', 'classes/PerformanceAuditPHPAnalyzer');
+
+module_load_include('php', 'performance_audit', 'src/Collectors/Mysql/Basic');
+module_load_include('php', 'performance_audit', 'src/Collectors/Mysql/MysqlInfo');
+module_load_include('php', 'performance_audit', 'src/Analyzer/Mysql/MemoryAnalyzer');
 
 // @todo create admin page to enable certain sections for analysis.
 
@@ -46,15 +53,23 @@ function performance_audit_permission() {
  * Implements hook_menu().
  */
 function performance_audit_menu() {
-  return array(
-    'admin/reports/performance_audit' => array(
-      'title' => 'Performance audit report',
-      'description' => 'Performance audit report and recommendations.',
-      'page callback' => 'performance_audit_get_content',
-      'access arguments' => array('view performance_audit info'),
-      'file' => 'performance_audit.page.inc',
-    ),
+  $items['admin/reports/performance_audit'] = array(
+    'title' => 'Performance audit report',
+    'description' => 'Performance audit report and recommendations.',
+    'page callback' => 'performance_audit_get_content',
+    'access arguments' => array('view performance_audit info'),
+    'file' => 'performance_audit.page.inc',
   );
+
+  $items['admin/reports/performance_audit_mysql'] = array(
+    'title' => 'Performance audit report',
+    'description' => 'Performance audit report and recommendations.',
+    'page callback' => 'performance_audit_get_content_mysql',
+    'access arguments' => array('view performance_audit info'),
+    'file' => 'performance_audit.page.inc',
+  );
+
+  return $items;
 }
 
 /**
