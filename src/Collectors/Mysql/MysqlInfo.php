@@ -1,9 +1,8 @@
 <?php
 /**
  * @file
- * Get Mysql Info
+ * Class MysqlInfo.
  */
-
 class MysqlInfo {
 
   /**

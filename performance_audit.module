@@ -52,6 +52,7 @@ function performance_audit_permission() {
  * Implements hook_menu().
  */
 function performance_audit_menu() {
+  // @todo unify this pages.
   $items['admin/reports/performance_audit'] = array(
     'title' => 'Performance audit report',
     'description' => 'Performance audit report and recommendations.',
