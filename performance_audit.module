@@ -124,14 +124,45 @@ function performance_audit_requirements($phase) {
     if (!empty($errors)) {
       $requirements['performance_audit']['value'] = t('There is a !critical_problem in PHP configuration.',
         array(
-          '!critical_problem' => l($t('critical problem'), 'admin/reports/performance_audit')));
+          '!critical_problem' => l($t('critical problem'), 'admin/reports/performance_audit')
+        ));
       $requirements['performance_audit']['severity'] = REQUIREMENT_ERROR;
     }
     elseif (!empty($warnings)) {
       $requirements['performance_audit']['value'] = t('There is a !problem in PHP configuration.',
         array(
-          '!problem' => l($t('problem'), 'admin/reports/performance_audit')));
+          '!problem' => l($t('problem'), 'admin/reports/performance_audit')
+        ));
       $requirements['performance_audit']['severity'] = REQUIREMENT_WARNING;
+    }
+
+    // Mysql Phase.
+
+    $analyzer = new MemoryAnalyzer('root', '', PERFORMANCE_AUDIT_MYSQL_INI);
+    $data = $analyzer->analyze();
+
+    foreach ($data['options'] as $option) {
+      if ($option['status'] == $analyzer::STATUS_ERROR) {
+        $errors[] = $option['name'];
+      }
+      elseif ($option['status'] == $analyzer::STATUS_WARNING) {
+        $warnings[] = $option['name'];
+      }
+    }
+
+    if (!empty($errors)) {
+      $requirements['performance_audit_mysql']['value'] = t('There is a !critical_problem in PHP configuration.',
+        array(
+          '!critical_problem' => l($t('critical problem'), 'admin/reports/performance_audit_mysql')
+        ));
+      $requirements['performance_audit_mysql']['severity'] = REQUIREMENT_ERROR;
+    }
+    elseif (!empty($warnings)) {
+      $requirements['performance_audit_mysql']['value'] = t('There is a !problem in PHP configuration.',
+        array(
+          '!problem' => l($t('problem'), 'admin/reports/performance_audit_mysql')
+        ));
+      $requirements['performance_audit_mysql']['severity'] = REQUIREMENT_WARNING;
     }
   }
 
@@ -148,6 +179,15 @@ function performance_audit_block_info() {
       'cache' => DRUPAL_NO_CACHE,
     ),
   );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function performance_audit_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && !empty($plugin)) {
+    return 'plugins/' . $plugin;
+  }
 }
 
 /**
