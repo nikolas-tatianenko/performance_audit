@@ -1,0 +1,144 @@
+<?php
+
+/**
+ * @file
+ * performance_audit.module
+ */
+
+// Returns configuration options related to performance.
+define('PERFORMANCE_AUDIT_PHP_INI', 'php_ini');
+// Returns array with the names of all PHP modules compiled and loaded
+define('PERFORMANCE_AUDIT_PHP_EXTENSIONS', 'php_extensions');
+// Return information about the current PHP version.
+define('PERFORMANCE_AUDIT_PHP_VERSION', 'php_version');
+// Returns information about defined PHP constants.
+define('PERFORMANCE_AUDIT_PHP_CONSTANTS', 'php_constants');
+// Returns information about the operating system PHP is running on.
+define('PERFORMANCE_AUDIT_OS', 'os');
+// Returns a list of loaded Apache modules.
+define('PERFORMANCE_AUDIT_APACHE_MODULES', 'apache_modules');
+// Returns information about environment variables.
+define('PERFORMANCE_AUDIT_ENV', 'env');
+// Returns information about server configuration.
+define('PERFORMANCE_AUDIT_SERVER', 'server');
+// Returns a list of registered streams.
+define('PERFORMANCE_AUDIT_STREAM_WRAPPERS', 'stream_wrappers');
+
+// Loads required classes.
+module_load_include('php', 'performance_audit', 'classes/PerformanceAuditPHPCollector');
+module_load_include('php', 'performance_audit', 'classes/PerformanceAuditPHPAnalyzer');
+
+// @todo create admin page to enable certain sections for analysis.
+
+/**
+ * Implements hook_permission().
+ */
+function performance_audit_permission() {
+  return array(
+    'view performance_audit info' => array(
+      'title' => t('View performance audit information'),
+      'description' => t('Access and view performance audit information.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function performance_audit_menu() {
+  return array(
+    'admin/reports/performance_audit' => array(
+      'title' => 'Performance audit report',
+      'description' => 'Performance audit report and recommendations.',
+      'page callback' => 'performance_audit_get_content',
+      'access arguments' => array('view performance_audit info'),
+      'file' => 'performance_audit.page.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function performance_audit_theme($existing, $type, $theme, $path) {
+  return array(
+    'performance_audit_page' => array(
+      'variables' => array('data' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_requirements().
+ * @todo check for appropriate permissions.
+ */
+function performance_audit_requirements($phase) {
+  $requirements = array();
+  // Ensure translations don't break during installation.
+  $t = get_t();
+
+  if ($phase == 'runtime') {
+    // @todo implement admin configuration to check some types on the fly and provide the report.
+    $errors = array();
+    $warnings = array();
+    $requirements['performance_audit'] = array(
+      'title' => $t('Performance Audit'),
+      'value' => t('No problems in PHP configuration were found.'),
+      'severity' => REQUIREMENT_OK,
+    );
+
+    $type = PERFORMANCE_AUDIT_PHP_INI;
+    $analyzer = new PerformanceAuditPHPAnalyzer($type);
+    $data = $analyzer->analyze();
+
+    foreach ($data['options'] as $option) {
+      if ($option['status'] == $analyzer::STATUS_ERROR) {
+        $errors[] = $option['name'];
+      }
+      elseif ($option['status'] == $analyzer::STATUS_WARNING) {
+        $warnings[] = $option['name'];
+      }
+    }
+
+    if (!empty($errors)) {
+      $requirements['performance_audit']['value'] = t('There is a !critical_problem in PHP configuration.',
+        array(
+          '!critical_problem' => l($t('critical problem'), 'admin/reports/performance_audit')));
+      $requirements['performance_audit']['severity'] = REQUIREMENT_ERROR;
+    }
+    elseif (!empty($warnings)) {
+      $requirements['performance_audit']['value'] = t('There is a !problem in PHP configuration.',
+        array(
+          '!problem' => l($t('problem'), 'admin/reports/performance_audit')));
+      $requirements['performance_audit']['severity'] = REQUIREMENT_WARNING;
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function performance_audit_block_info() {
+  return array(
+    'performance_audit_php' => array(
+      'info' => t('Performance Audit [php]'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function performance_audit_block_view($delta = 'performance_audit_php') {
+  module_load_include('inc', 'performance_audit', 'performance_audit.block.inc');
+
+  if ($delta == 'performance_audit_php') {
+    return array(
+      'subject' => t('Performance Audit [php]'),
+      'content' => performance_audit_block_get_content($delta),
+    );
+  };
+}
